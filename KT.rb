@@ -1,70 +1,71 @@
-#!/usr/bin/env ruby
+class KST
+	attr_reader :queue
+
+	def initialize(pos)
+		@root = Knight.new(pos, 0)
+		@queue = [@root]
+	end
+
+	def search(final)
+		move_count = 1
+
+		until @queue.empty? do 
+
+			return "You got there in #{@queue[0].move} moves!" if @queue[0].pos == final #To check if we have found the final position
+
+			@queue[0].generate_moves(move_count) #To generate the next moves
+
+			@queue << @queue[0].m1 unless @queue[0].m1.nil? # and append the moves to the end of queue
+			@queue << @queue[0].m2 unless @queue[0].m2.nil?
+			@queue << @queue[0].m3 unless @queue[0].m3.nil?
+			@queue << @queue[0].m4 unless @queue[0].m4.nil?
+			@queue << @queue[0].m5 unless @queue[0].m5.nil?
+			@queue << @queue[0].m6 unless @queue[0].m6.nil?
+			@queue << @queue[0].m7 unless @queue[0].m7.nil?
+			@queue << @queue[0].m8 unless @queue[0].m8.nil?
+
+			@queue.shift # then progress the queue
+
+			move_count += 1 # and at this stage, we need to move again.
+
+		end
+		nil
+	end
+end
 
 class Knight
-  attr_reader :position, :next_move1
+	attr_reader :pos, :move, :m1, :m2, :m3, :m4, :m5, :m6, :m7, :m8
 
-  def initialize(position)
-    @position = position
-    @next_move1 = nil
-    @next_move2 = nil
-    @next_move3 = nil
-    @next_move4 = nil
-    @next_move5 = nil
-    @next_move6 = nil
-    @next_move7 = nil
-    @next_move8 = nil
-  end
+	def initialize(pos, move=nil)
+		@pos = pos
+		@move = move
+		@m1 = nil
+		@m2 = nil
+		@m3 = nil
+		@m4 = nil
+		@m5 = nil
+		@m6 = nil
+		@m7 = nil
+		@m8 = nil
+	end
 
-  def calc_possible_moves
-    @moves = []
-    @moves << [@position[0]-2, @position[1]-1]
-    @moves << [@position[0]-1, @position[1]-2]
-    @moves << [@position[0]+1, @position[1]-2]
-    @moves << [@position[0]+2, @position[1]-1]
-    @moves << [@position[0]-2, @position[1]+1]
-    @moves << [@position[0]-1, @position[1]+2]
-    @moves << [@position[0]+1, @position[1]+2]
-    @moves << [@position[0]+2, @position[1]+1]
-    @moves.select { |move| is_on_board?(move) }
-  end
+	def generate_moves(num)
+		@m1 = Knight.new([@pos[0]-2, @pos[1]-1], self.move + 1) if is_on_board?([@pos[0]-2, @pos[1]-1])
+		@m2 = Knight.new([@pos[0]-1, @pos[1]-2], self.move + 1) if is_on_board?([@pos[0]-1, @pos[1]-2])
+		@m3 = Knight.new([@pos[0]+1, @pos[1]-2], self.move + 1) if is_on_board?([@pos[0]+1, @pos[1]-2])
+		@m4 = Knight.new([@pos[0]+2, @pos[1]-1], self.move + 1) if is_on_board?([@pos[0]+2, @pos[1]-1])
+		@m5 = Knight.new([@pos[0]-2, @pos[1]+1], self.move + 1) if is_on_board?([@pos[0]-2, @pos[1]+1])
+		@m6 = Knight.new([@pos[0]-1, @pos[1]+2], self.move + 1) if is_on_board?([@pos[0]-1, @pos[1]+2])
+		@m7 = Knight.new([@pos[0]+1, @pos[1]+2], self.move + 1) if is_on_board?([@pos[0]+1, @pos[1]+2])
+		@m8 = Knight.new([@pos[0]+2, @pos[1]+1], self.move + 1) if is_on_board?([@pos[0]+2, @pos[1]+1])
+	end
 
-  def link_next_moves
-    @next_move1 = Knight.new(@moves[0]) unless @moves[0].nil?
-    @next_move2 = Knight.new(@moves[1]) unless @moves[1].nil?
-    @next_move3 = Knight.new(@moves[2]) unless @moves[2].nil?
-    @next_move4 = Knight.new(@moves[3]) unless @moves[3].nil?
-    @next_move5 = Knight.new(@moves[4]) unless @moves[4].nil?
-    @next_move6 = Knight.new(@moves[5]) unless @moves[5].nil?
-    @next_move7 = Knight.new(@moves[6]) unless @moves[6].nil?
-    @next_move8 = Knight.new(@moves[7]) unless @moves[7].nil?
-  end
+	private
 
-  def is_on_board?(move)
-    move.each do |num|
-      return false if num 0 || num > 7
-    end
-    true
-  end
-
-  def breadth_first_search(final_position)
-    queue = [@root]
+	def is_on_board?(pos)
+		pos[0].between?(0,7) && pos[1].between?(0,7) ? true : false
+	end
 end
 
-class KnightSearchTree
-  attr_accessor :root
-
-  def initialize(position)
-    @root = Knight.new(position)
-  end
-
-  def search(final_position)
-    queue = [@root]
-  end
-
-
-end
-
-sir_henry = Knight.new([1,1])
-sir_henry.calc_possible_moves
-sir_henry.link_next_moves
-p sir_henry.next_move1
+sir_henry = KST.new([4,2])
+p sir_henry.search([2,6])
