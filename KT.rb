@@ -11,19 +11,17 @@ class KST
 
 		until @queue.empty? do 
 
-      if @queue[0].pos == final #To check if we have found the final position
+      if @queue[0].pos == final #To check if we have found the final position,
         puts "You got there in #{@queue[0].move} moves!" 
 
-        current_move = @queue[0]
+        current_move = @queue[0] # and if we have, print the previous moves,
         until current_move == @root
           puts "Move ##{current_move.move}: #{current_move.pos}"
           current_move = current_move.previous_move
         end
-
-        puts "Original: #{@root.pos}"
-
+        puts "Original: #{@root.pos}" # and the original position
+        
         return
-
       end
           
 
