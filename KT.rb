@@ -11,7 +11,21 @@ class KST
 
 		until @queue.empty? do 
 
-			return "You got there in #{@queue[0].move} moves!" if @queue[0].pos == final #To check if we have found the final position
+      if @queue[0].pos == final #To check if we have found the final position
+        puts "You got there in #{@queue[0].move} moves!" 
+
+        current_move = @queue[0]
+        until current_move == @root
+          puts "Move ##{current_move.move}: #{current_move.pos}"
+          current_move = current_move.previous_move
+        end
+
+        puts "Original: #{@root.pos}"
+
+        return
+
+      end
+          
 
 			@queue[0].generate_moves(move_count) #To generate the next moves
 
@@ -34,11 +48,12 @@ class KST
 end
 
 class Knight
-	attr_reader :pos, :move, :m1, :m2, :m3, :m4, :m5, :m6, :m7, :m8
+	attr_reader :pos, :move, :previous_move, :m1, :m2, :m3, :m4, :m5, :m6, :m7, :m8
 
-	def initialize(pos, move=nil)
+	def initialize(pos, move=nil, previous_move=nil)
 		@pos = pos
-		@move = move
+    @move = move
+    @previous_move = previous_move
 		@m1 = nil
 		@m2 = nil
 		@m3 = nil
@@ -50,15 +65,15 @@ class Knight
 	end
 
 	def generate_moves(num)
-		@m1 = Knight.new([@pos[0]-2, @pos[1]-1], self.move + 1) if is_on_board?([@pos[0]-2, @pos[1]-1])
-		@m2 = Knight.new([@pos[0]-1, @pos[1]-2], self.move + 1) if is_on_board?([@pos[0]-1, @pos[1]-2])
-		@m3 = Knight.new([@pos[0]+1, @pos[1]-2], self.move + 1) if is_on_board?([@pos[0]+1, @pos[1]-2])
-		@m4 = Knight.new([@pos[0]+2, @pos[1]-1], self.move + 1) if is_on_board?([@pos[0]+2, @pos[1]-1])
-		@m5 = Knight.new([@pos[0]-2, @pos[1]+1], self.move + 1) if is_on_board?([@pos[0]-2, @pos[1]+1])
-		@m6 = Knight.new([@pos[0]-1, @pos[1]+2], self.move + 1) if is_on_board?([@pos[0]-1, @pos[1]+2])
-		@m7 = Knight.new([@pos[0]+1, @pos[1]+2], self.move + 1) if is_on_board?([@pos[0]+1, @pos[1]+2])
-		@m8 = Knight.new([@pos[0]+2, @pos[1]+1], self.move + 1) if is_on_board?([@pos[0]+2, @pos[1]+1])
-	end
+		@m1 = Knight.new([@pos[0]-2, @pos[1]-1], self.move + 1, self) if is_on_board?([@pos[0]-2, @pos[1]-1])
+		@m2 = Knight.new([@pos[0]-1, @pos[1]-2], self.move + 1, self) if is_on_board?([@pos[0]-1, @pos[1]-2])
+		@m3 = Knight.new([@pos[0]+1, @pos[1]-2], self.move + 1, self) if is_on_board?([@pos[0]+1, @pos[1]-2])
+		@m4 = Knight.new([@pos[0]+2, @pos[1]-1], self.move + 1, self) if is_on_board?([@pos[0]+2, @pos[1]-1])
+		@m5 = Knight.new([@pos[0]-2, @pos[1]+1], self.move + 1, self) if is_on_board?([@pos[0]-2, @pos[1]+1])
+		@m6 = Knight.new([@pos[0]-1, @pos[1]+2], self.move + 1, self) if is_on_board?([@pos[0]-1, @pos[1]+2])
+		@m7 = Knight.new([@pos[0]+1, @pos[1]+2], self.move + 1, self) if is_on_board?([@pos[0]+1, @pos[1]+2])
+		@m8 = Knight.new([@pos[0]+2, @pos[1]+1], self.move + 1, self) if is_on_board?([@pos[0]+2, @pos[1]+1])
+  end
 
 	private
 
@@ -68,4 +83,4 @@ class Knight
 end
 
 sir_henry = KST.new([4,2])
-p sir_henry.search([2,6])
+p sir_henry.search([3,6])
